@@ -12,14 +12,16 @@ export class UsersService {
   //   return `This action returns all users`;
   // }
 
-  getUserById(userId: string) {
-    return this.usersRepo.findUnique({
+  async getUserById(userId: string) {
+    const user = await this.usersRepo.findUnique({
       where: { id: userId },
       select: {
+        id: true,
         email: true,
         name: true,
       },
     });
+    return user
   }
 
   // update(id: number, updateUserInput: UpdateUserInput) {

@@ -18,7 +18,6 @@ export class RolesGuard implements CanActivate {
       'roles',
       context.getHandler(),
     );
-
     if (!requiredRoles) {
       // Se a rota não exigir papéis/roles específicos, permita o acesso
       return true;

@@ -1,24 +1,18 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
+import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
+// @IsPublic()
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) { }
 
-  // @Mutation(() => User)
-  // createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-  //   return this.usersService.create(createUserInput);
-  // }
-
-  // @Query(() => [User], { name: 'users' })
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
 
   @Query(() => User, { name: 'me' })
-  me(@Args('userId') userId: string) {
-    return this.usersService.getUserById(userId);
+  async me(@Args('userId') @ActiveUserId() userId: string) {
+    const user = await this.usersService.getUserById(userId);
+    return user
   }
 
   // @Mutation(() => User)

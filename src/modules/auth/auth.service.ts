@@ -30,7 +30,6 @@ export class AuthService {
     }
 
     const accessToken = await this.generateAccessToken(user.id);
-    console.log("accessToken", accessToken)
 
     return {
       id: user.id,

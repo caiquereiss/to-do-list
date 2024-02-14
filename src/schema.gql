@@ -30,6 +30,5 @@ input SignupInput {
 }
 
 type User {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: ID!
 }
