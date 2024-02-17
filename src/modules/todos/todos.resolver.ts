@@ -2,6 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoInput } from './dto/update-todo.input';
+import { TodoFilterEntity } from './entities/todo-filter.entity';
 import { Todo } from './entities/todo.entity';
 import { TodosService } from './services/todos.service';
 
@@ -17,8 +18,12 @@ export class TodosResolver {
   }
 
   @Query(() => [Todo], { name: 'todos' })
-  findAll() {
-    return this.todosService.findAll();
+  findAll(
+    @Args('userId') @ActiveUserId() userId: string,
+    @Args('filters', { nullable: true, defaultValue: {} }) filters: TodoFilterEntity,
+  ) {
+
+    return this.todosService.findAllByUserId(userId, filters);
   }
 
   @Query(() => Todo, { name: 'todo' })
