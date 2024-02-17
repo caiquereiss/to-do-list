@@ -22,12 +22,11 @@ type Mutation {
   removeTodo(id: Int!): Todo!
   signin(input: SigninInput!): Auth!
   signup(input: SignupInput!): Auth!
-  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
+  updateTodo(updateTodoInput: UpdateTodoInput!, userId: String!): Todo!
 }
 
 type Query {
   me(userId: String!): User!
-  todo(id: Int!): Todo!
   todos(filters: TodoFilterEntity = {}, userId: String!): [Todo!]!
 }
 
@@ -61,10 +60,10 @@ input TodoFilterEntity {
 input UpdateTodoInput {
   description: String
   dueDate: String
-  id: Int!
   priority: String
   status: String
   title: String
+  todoId: String!
 }
 
 type User {

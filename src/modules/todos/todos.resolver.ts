@@ -26,14 +26,19 @@ export class TodosResolver {
     return this.todosService.findAllByUserId(userId, filters);
   }
 
-  @Query(() => Todo, { name: 'todo' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.todosService.findOne(id);
-  }
+  // @Query(() => Todo, { name: 'todo' })
+  // findOne(
+  //   @Args('userId') @ActiveUserId() userId: string,
+  //   @Args('id', { type: () => Int }) id: string) {
+  //   return this.todosService.findOneByUserId(userId, id);
+  // }
 
   @Mutation(() => Todo)
-  updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
-    return this.todosService.update(updateTodoInput.id, updateTodoInput);
+  updateTodo(
+    @Args('userId') @ActiveUserId() userId: string,
+    @Args('updateTodoInput') updateTodoInput: UpdateTodoInput
+  ) {
+    return this.todosService.update(userId, updateTodoInput.todoId, updateTodoInput);
   }
 
   @Mutation(() => Todo)

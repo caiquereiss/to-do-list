@@ -10,6 +10,10 @@ export class TodosRepository {
     return this.prismaService.todo.findMany(findManyDto);
   }
 
+  findOne(findUniqueDto: Prisma.TodoFindUniqueArgs) {
+    return this.prismaService.todo.findUnique(findUniqueDto);
+  }
+
   findFirst(findFirstDto: Prisma.TodoFindFirstArgs) {
     return this.prismaService.todo.findFirst(findFirstDto);
   }
