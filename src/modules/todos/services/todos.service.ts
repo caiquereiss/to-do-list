@@ -3,6 +3,7 @@ import { TodosRepository } from 'src/shared/database/repositories/todos.reposito
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoInput } from '../dto/update-todo.input';
+import { TodoPriorityType, TodoStatusType } from '../entities/todo-type.entity';
 import { ValidateTodoOwnershipService } from './validate-todo-ownership.service';
 
 @Injectable()
@@ -37,8 +38,40 @@ export class TodosService {
 
   }
 
-  findAll() {
-    return `This action returns all todos`;
+  findAllByUserId(
+    userId: string,
+    filters?: {
+      month: number,
+      year: number,
+      status: TodoStatusType,
+      priority: TodoPriorityType
+    }) {
+    const where: any = { userId };
+
+    if (filters?.status) {
+      where.status = filters.status;
+    }
+
+    if (filters?.priority) {
+      where.priority = filters.priority;
+    }
+
+    if (filters?.year && filters?.month) {
+      if (filters.status) {
+        where.dueDate = {
+          gte: new Date(Date.UTC(filters.year, filters.month)),
+          lt: new Date(Date.UTC(filters.year, filters.month + 1)),
+        };
+      } else {
+        where.createdAt = {
+          gte: new Date(Date.UTC(filters.year, filters.month)),
+          lt: new Date(Date.UTC(filters.year, filters.month + 1)),
+        };
+      }
+
+    }
+
+    return this.todosRepo.findMany({ where })
   }
 
   findOne(id: number) {
