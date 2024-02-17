@@ -38,7 +38,7 @@ export class TodosService {
 
   }
 
-  findAllByUserId(
+  async findAllByUserId(
     userId: string,
     filters?: {
       month: number,
@@ -46,6 +46,17 @@ export class TodosService {
       status: TodoStatusType,
       priority: TodoPriorityType
     }) {
+
+    const userAlreadyExists = await this.usersRepo.findUnique({
+      where: {
+        id: userId
+      }
+    })
+
+    if (!userAlreadyExists) {
+      throw new NotFoundException('User not found.');
+    }
+
     const where: any = { userId };
 
     if (filters?.status) {
@@ -74,12 +85,42 @@ export class TodosService {
     return this.todosRepo.findMany({ where })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
-  }
+  // async findOneByUserId(userId: string, id: string) {
+  //   const userAlreadyExists = await this.usersRepo.findUnique({
+  //     where: {
+  //       id: userId
+  //     }
+  //   })
 
-  update(id: number, updateTodoInput: UpdateTodoInput) {
-    return `This action updates a #${id} todo`;
+  //   if (!userAlreadyExists) {
+  //     throw new NotFoundException('User not found.');
+  //   }
+
+  //   return this.todosRepo.findMany({
+  //     where: {
+  //       userId,
+  //       id
+  //     }
+  //   });
+  // }
+
+  async update(userId: string, todoId: string, updateTodoInput: UpdateTodoInput) {
+    const { title, description, dueDate, status, priority } = updateTodoInput
+
+    await this.ValidateEntitiesOwnership({ userId, todoId })
+
+    return await this.todosRepo.update(
+      {
+        where: { id: todoId },
+        data: {
+          title,
+          description,
+          dueDate,
+          status,
+          priority
+        }
+      }
+    )
   }
 
   remove(id: number) {
