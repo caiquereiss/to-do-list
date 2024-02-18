@@ -123,8 +123,11 @@ export class TodosService {
     )
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  async remove(userId: string, todoId: string) {
+    await this.ValidateEntitiesOwnership({ userId, todoId })
+    return await this.todosRepo.delete({
+      where: { id: todoId }
+    })
   }
 
 

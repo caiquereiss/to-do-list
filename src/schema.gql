@@ -19,7 +19,7 @@ input CreateTodoDto {
 
 type Mutation {
   createTodo(createTodoDto: CreateTodoDto!, userId: String!): Todo!
-  removeTodo(id: Int!): Todo!
+  removeTodo(todoId: String!, userId: String!): Todo!
   signin(input: SigninInput!): Auth!
   signup(input: SignupInput!): Auth!
   updateTodo(updateTodoInput: UpdateTodoInput!, userId: String!): Todo!
