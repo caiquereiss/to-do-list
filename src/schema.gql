@@ -27,7 +27,7 @@ type Mutation {
 
 type Query {
   me(userId: String!): User!
-  todos(filters: TodoFilterEntity = {}, userId: String!): [Todo!]!
+  todos(filters: TodoFilterEntity = {}, options: TodoListOptions = {}, userId: String!): [Todo!]!
 }
 
 input SigninInput {
@@ -55,6 +55,13 @@ input TodoFilterEntity {
   priority: String
   status: String
   year: Float
+}
+
+input TodoListOptions {
+  orderBy: String! = "createdAt"
+  orderDirection: String! = "asc"
+  skip: Int = 0
+  take: Int = 0
 }
 
 input UpdateTodoInput {

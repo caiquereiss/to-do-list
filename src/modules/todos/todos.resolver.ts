@@ -3,6 +3,7 @@ import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import { TodoFilterEntity } from './entities/todo-filter.entity';
+import { TodoListOptions } from './entities/todo-list-options';
 import { Todo } from './entities/todo.entity';
 import { TodosService } from './services/todos.service';
 
@@ -21,9 +22,12 @@ export class TodosResolver {
   findAll(
     @Args('userId') @ActiveUserId() userId: string,
     @Args('filters', { nullable: true, defaultValue: {} }) filters: TodoFilterEntity,
+    @Args('options', { nullable: true, defaultValue: {} }) options: TodoListOptions,
+
+
   ) {
 
-    return this.todosService.findAllByUserId(userId, filters);
+    return this.todosService.findAllByUserId(userId, options, filters);
   }
 
   // @Query(() => Todo, { name: 'todo' })
