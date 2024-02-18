@@ -3,6 +3,7 @@ import { TodosRepository } from 'src/shared/database/repositories/todos.reposito
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoInput } from '../dto/update-todo.input';
+import { TodoListOptions } from '../entities/todo-list-options';
 import { TodoPriorityType, TodoStatusType } from '../entities/todo-type.entity';
 import { ValidateTodoOwnershipService } from './validate-todo-ownership.service';
 
@@ -40,12 +41,15 @@ export class TodosService {
 
   async findAllByUserId(
     userId: string,
+    options?: TodoListOptions,
     filters?: {
       month: number,
       year: number,
       status: TodoStatusType,
       priority: TodoPriorityType
-    }) {
+    },
+
+  ) {
 
     const userAlreadyExists = await this.usersRepo.findUnique({
       where: {
@@ -81,8 +85,22 @@ export class TodosService {
       }
 
     }
+    const orderByObj: any = {};
 
-    return this.todosRepo.findMany({ where })
+    if (options?.orderBy === 'dueDate' || !options?.orderBy) {
+      orderByObj.dueDate = options?.orderDirection || 'asc';
+    } else if (options?.orderBy === 'createdAt') {
+      orderByObj.createdAt = options?.orderDirection || 'asc';
+    }
+
+    const todos = await this.todosRepo.findMany({ where, orderBy: orderByObj })
+
+    return todos.map(todo => ({
+      ...todo,
+      dueDate: todo.dueDate.toISOString()
+    }));
+
+
   }
 
   // async findOneByUserId(userId: string, id: string) {
